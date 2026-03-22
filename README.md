@@ -1,4 +1,4 @@
-# 🏢 Leave Query System
+# Leave Query System
 
 A natural language query system for employee leave management using deterministic rules + Google Gemini API.
 
@@ -8,7 +8,7 @@ A natural language query system for employee leave management using deterministi
 
 ---
 
-## 🎯 Overview
+## Overview
 
 Allows employees to query leave info using natural language:
 - "What's my leave balance?"
@@ -17,7 +17,7 @@ Allows employees to query leave info using natural language:
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 | Component | Deterministic | Gemini AI |
 |-----------|--------------|-----------|
@@ -29,7 +29,7 @@ Allows employees to query leave info using natural language:
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
@@ -41,22 +41,60 @@ Allows employees to query leave info using natural language:
 
 ---
 
-## 🔄 Query Flow
+## Query Flow
 
 ```
-INPUT: "What leaves did Soumya take last month?"
-   │
-   ├─ 1. Intent Detection   → leave_history (confidence: 0.95)
-   ├─ 2. Entity Extraction  → Employee: "Soumya", Date: "last month"
-   ├─ 3. Employee Resolution → "Soumya" → "Soumya Gorla" (EMP001)
-   ├─ 4. Date Normalization  → (2024-02-01, 2024-02-29)
-   ├─ 5. DB Query           → WHERE employee_id='EMP001' AND date BETWEEN ...
-   └─ 6. Response           → { "employee": "Soumya Gorla", "total_leaves": 1, ... }
+┌─────────────────────────────────────────────────────────────┐
+│     INPUT: "What leaves did Soumya take last month?"        │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  STEP 1: Intent Detection                                   │
+│  Keywords: "what leaves", "take", "last month"              │
+│  Result: leave_history (confidence: 0.95)                   │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  STEP 2: Entity Extraction                                  │
+│  Employee: "Soumya" → Pattern: r'for (\w+)'                 │
+│  Date Range: "last month" → Date pattern detected           │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  STEP 3: Employee Resolution                                │
+│  "Soumya" → "Soumya Gorla" (EMP001) — exact match          │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  STEP 4: Date Normalization                                 │
+│  "last month" → (2024-02-01, 2024-02-29)                    │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  STEP 5: DB Query & Filter                                  │
+│  WHERE employee_id = 'EMP001'                               │
+│  AND start_date >= '2024-02-01'                             │
+│  AND end_date <= '2024-02-29'                               │
+│  AND status NOT IN ('cancelled', 'rejected')                │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  STEP 6: Response                                           │
+│  { "employee": "Soumya Gorla", "total_leaves": 1,           │
+│    "leaves": [{ "type": "sick", "days": 2,                  │
+│    "status": "approved" }] }                                │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 git clone https://github.com/Nitish7772/leave-query-system.git
@@ -74,7 +112,7 @@ $env:GEMINI_API_KEY = "your-api-key-here"   # Windows
 
 ---
 
-## 🚀 Running
+## Running
 
 ```bash
 python app.py
@@ -83,7 +121,7 @@ Visit: **http://localhost:5000**
 
 ---
 
-## 📡 API Endpoints
+## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -108,7 +146,7 @@ Visit: **http://localhost:5000**
 
 ---
 
-## 💬 Example Queries
+## Example Queries
 
 | Query | Intent |
 |-------|--------|
@@ -119,40 +157,29 @@ Visit: **http://localhost:5000**
 
 ---
 
-## 📁 Project Structure
+## Project Stucture
 
-```
 leave-query-system/
 ├── app.py
+├── config.py
 ├── requirements.txt
-├── services/         # intent, entity, date, employee, leave
-├── utils/            # gemini_client, validators
-├── models/           # employee, leave
-└── tests/            # test_intent, test_dates, test_orchestrator
-```
+├── .env
+├── .gitignore
+├── README.md
+├── models/
+│   ├── employee.py
+│   └── leave.py
+├── services/
+│   ├── date_normalizer.py
+│   ├── employee_service.py
+│   ├── entity_service.py
+│   ├── intent_service.py
+│   ├── leave_service.py
+│   └── orchestrator.py
+└── utils/
+    ├── formatters.py
+    ├── gemini_client.py
+    └── validators.py
 
 ---
 
-## 🧪 Testing
-
-```bash
-pytest tests/ -v
-pytest --cov=. tests/
-```
-
----
-
-## 🔧 Troubleshooting
-
-| Issue | Fix |
-|-------|-----|
-| Module not found | `pip install -r requirements.txt` |
-| Port 5000 in use | `lsof -i :5000` → `kill -9 <PID>` |
-| Gemini API failing | Set `USE_GEMINI_API=false` |
-| Employee not found | Use full name e.g. `"Soumya Gorla"` |
-
----
-
-## 📄 License
-
-MIT License — **Author:** Nitish Kumar · [@Nitish7772](https://github.com/Nitish7772)
