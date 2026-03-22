@@ -116,3 +116,70 @@ $env:GEMINI_API_KEY = "your-api-key-here"   # Windows
 
 ```bash
 python app.py
+```
+Visit: **http://localhost:5000**
+
+---
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/` | Web UI |
+| POST | `/api/query` | Process natural language query |
+| GET | `/api/status` | Health check |
+| GET | `/api/employees` | List all employees |
+
+**Request:** `{ "query": "my leave balance", "user_id": "EMP002" }`
+
+**Response:**
+```json
+{
+  "status": "success",
+  "data": {
+    "employee": "Nitish Kumar",
+    "employee_id": "EMP002",
+    "balances": { "casual": 8, "sick": 12, "earned": 12, "compensatory": 3 }
+  }
+}
+```
+
+---
+
+## Example Queries
+
+| Query | Intent |
+|-------|--------|
+| "my leave balance" | Balance — current user |
+| "leave balance soumya" | Balance — specific employee |
+| "what leaves did soumya take last month?" | History — filtered by date |
+| "status of my leave requests" | Status check |
+
+---
+
+## Project 
+```
+leave-query-system/
+├── app.py
+├── config.py
+├── requirements.txt
+├── .env
+├── .gitignore
+├── README.md
+├── models/
+│   ├── employee.py
+│   └── leave.py
+├── services/
+│   ├── date_normalizer.py
+│   ├── employee_service.py
+│   ├── entity_service.py
+│   ├── intent_service.py
+│   ├── leave_service.py
+│   └── orchestrator.py
+└── utils/
+    ├── formatters.py
+    ├── gemini_client.py
+    └── validators.py
+```
+---
+
