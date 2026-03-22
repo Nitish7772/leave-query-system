@@ -2,7 +2,7 @@ from typing import List, Optional, Dict
 from datetime import datetime, date, timedelta
 import logging
 from services.date_normalizer import DateRange
-from utils.google_api_client import GoogleAPIClient
+from utils.gemini_client import gemini_client
 
 logger = logging.getLogger(__name__)
 
@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class LeaveService:
     """Service for leave-related operations with Google Calendar API"""
     
-    def __init__(self, google_calendar_client: GoogleAPIClient = None):
+    def __init__(self, google_calendar_client: gemini_client = None):
         self.google_calendar_client = google_calendar_client
         self.cache = {}
     

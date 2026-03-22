@@ -33,7 +33,6 @@ api_requests.log
 Thumbs.db
 
 # API Keys (IMPORTANT!)
-config.py
 *.key
 *.pem
 

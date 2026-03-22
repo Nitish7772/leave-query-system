@@ -2,7 +2,11 @@ from flask import Flask, request, jsonify, render_template_string
 from flask_cors import CORS
 from datetime import datetime, date, timedelta
 import logging
+import os
 import re
+
+# Import config
+from config import Config
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -10,9 +14,11 @@ logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dev-key-change-in-production'
-app.config['DEBUG'] = True
+app.config.from_object(Config)
 CORS(app)
+
+# Display configuration on startup
+Config.display_config()
 
 # ============= MOCK DATA =============
 EMPLOYEES = {
