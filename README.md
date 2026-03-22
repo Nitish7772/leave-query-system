@@ -158,7 +158,7 @@ Visit: **http://localhost:5000**
 ---
 
 ## Project Stucture
---
+```
 leave-query-system/
 ├── app.py
 ├── config.py
@@ -180,6 +180,6 @@ leave-query-system/
     ├── formatters.py
     ├── gemini_client.py
     └── validators.py
---
+```
 ---
 
